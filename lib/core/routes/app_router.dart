@@ -10,14 +10,19 @@ import '../../features/onboarding/presentation/pages/onboarding_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
 import '../../features/trips/presentation/pages/create_trip_page.dart';
 import '../../features/trips/presentation/pages/trip_list_page.dart';
+import '../../features/trips/presentation/pages/trip_detail_page.dart';
 import '../../features/tours/presentation/pages/tour_discovery_page.dart';
+import '../../features/tours/presentation/pages/tour_detail_page.dart';
 import '../../features/community/presentation/pages/community_feed_page.dart';
 import '../../features/chat/presentation/pages/chat_list_page.dart';
 import '../../features/chat/presentation/pages/chat_conversation_page.dart';
 import '../../features/ai/presentation/pages/ai_assistant_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
+import '../../features/profile/presentation/pages/edit_profile_page.dart';
 import '../../features/partner/presentation/pages/partner_portal_page.dart';
 import '../../features/sos/presentation/pages/sos_page.dart';
+import '../../features/community/presentation/pages/create_post_page.dart';
+import '../../features/notifications/presentation/pages/notifications_page.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -73,11 +78,27 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: 'create-trip',
         builder: (context, state) => const CreateTripPage(),
       ),
+      GoRoute(
+        path: '/trips/:tripId',
+        name: 'trip-detail',
+        builder: (context, state) {
+          final tripId = state.pathParameters['tripId'] ?? '';
+          return TripDetailPage(tripId: tripId);
+        },
+      ),
       // Tours routes
       GoRoute(
         path: '/tours',
         name: 'tours',
         builder: (context, state) => const TourDiscoveryPage(),
+      ),
+      GoRoute(
+        path: '/tours/:tourId',
+        name: 'tour-detail',
+        builder: (context, state) {
+          final tourId = state.pathParameters['tourId'] ?? '';
+          return TourDetailPage(tourId: tourId);
+        },
       ),
       // Community routes
       GoRoute(
@@ -110,6 +131,23 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/profile',
         name: 'profile',
         builder: (context, state) => const ProfilePage(),
+      ),
+      GoRoute(
+        path: '/profile/edit',
+        name: 'edit-profile',
+        builder: (context, state) => const EditProfilePage(),
+      ),
+      // Notifications
+      GoRoute(
+        path: '/notifications',
+        name: 'notifications',
+        builder: (context, state) => const NotificationsPage(),
+      ),
+      // Community create post
+      GoRoute(
+        path: '/community/create-post',
+        name: 'create-post',
+        builder: (context, state) => const CreatePostPage(),
       ),
       // Partner Portal
       GoRoute(

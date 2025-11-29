@@ -122,7 +122,7 @@ class _HomeTab extends StatelessWidget {
                     // Notification icon
                     IconButton(
                       icon: const Icon(Icons.notifications_outlined, color: Colors.white),
-                      onPressed: () {},
+                      onPressed: () => context.push('/notifications'),
                     ),
                     // Chat icon
                     IconButton(

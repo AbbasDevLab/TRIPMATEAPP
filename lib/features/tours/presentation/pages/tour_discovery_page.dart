@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/models/tour_model.dart';
@@ -270,7 +271,7 @@ class _TourCard extends StatelessWidget {
       ),
       child: InkWell(
         onTap: () {
-          // TODO: Navigate to tour details
+          context.push('/tours/${tour.id}');
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -426,7 +427,7 @@ class _TourCard extends StatelessWidget {
                       const Spacer(),
                       ElevatedButton(
                         onPressed: () {
-                          // TODO: Navigate to tour details
+                          context.push('/tours/${tour.id}');
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Theme.of(context).colorScheme.primary,

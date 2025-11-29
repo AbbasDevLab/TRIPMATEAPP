@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/models/chat_message_model.dart';
+import '../../../../core/providers/mock_data_provider.dart';
+import '../../../../core/config/app_config.dart';
 
 class ChatListPage extends ConsumerStatefulWidget {
   const ChatListPage({super.key});
@@ -23,8 +25,10 @@ class _ChatListPageState extends ConsumerState<ChatListPage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Replace with actual data from provider
-    final chats = <ChatModel>[];
+    // Use mock data in test mode
+    final chats = AppConfig.testMode
+        ? MockDataProvider.getMockChats()
+        : <ChatModel>[];
 
     return Scaffold(
       body: Column(
@@ -187,7 +191,7 @@ class _ChatListItem extends StatelessWidget {
                     ),
                     SizedBox(height: 4.h),
                     Text(
-                      'Last message...', // TODO: Show last message
+                      chat.isGroup ? 'Group chat' : 'Tap to start conversation',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: Colors.grey.shade600,
                           ),

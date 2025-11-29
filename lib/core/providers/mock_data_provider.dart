@@ -1,6 +1,7 @@
 import '../models/trip_model.dart';
 import '../models/tour_model.dart';
 import '../models/community_post_model.dart';
+import '../models/chat_message_model.dart';
 
 /// Mock data providers for test mode
 class MockDataProvider {
@@ -145,6 +146,56 @@ class MockDataProvider {
         isLiked: false,
         createdAt: DateTime.now().subtract(const Duration(days: 1)),
         updatedAt: DateTime.now().subtract(const Duration(days: 1)),
+      ),
+    ];
+  }
+
+  static List<ChatModel> getMockChats() {
+    return [
+      ChatModel(
+        id: '1',
+        name: 'Sarah Khan',
+        participantIds: ['user1', 'user2'],
+        lastMessageAt: DateTime.now().subtract(const Duration(minutes: 2)),
+        createdAt: DateTime.now().subtract(const Duration(days: 5)),
+        isGroup: false,
+        imageUrl: null,
+      ),
+      ChatModel(
+        id: '2',
+        name: 'Beach Paradise Group',
+        participantIds: ['user1', 'user2', 'user3', 'user4'],
+        lastMessageAt: DateTime.now().subtract(const Duration(hours: 1)),
+        createdAt: DateTime.now().subtract(const Duration(days: 10)),
+        isGroup: true,
+        imageUrl: null,
+      ),
+      ChatModel(
+        id: '3',
+        name: 'Ahmed Ali',
+        participantIds: ['user1', 'user3'],
+        lastMessageAt: DateTime.now().subtract(const Duration(hours: 3)),
+        createdAt: DateTime.now().subtract(const Duration(days: 3)),
+        isGroup: false,
+        imageUrl: null,
+      ),
+      ChatModel(
+        id: '4',
+        name: 'Mountain Trek Group',
+        participantIds: ['user1', 'user2', 'user3', 'user4', 'user5'],
+        lastMessageAt: DateTime.now().subtract(const Duration(days: 1)),
+        createdAt: DateTime.now().subtract(const Duration(days: 15)),
+        isGroup: true,
+        imageUrl: null,
+      ),
+      ChatModel(
+        id: '5',
+        name: 'Fatima Hassan',
+        participantIds: ['user1', 'user4'],
+        lastMessageAt: DateTime.now().subtract(const Duration(days: 2)),
+        createdAt: DateTime.now().subtract(const Duration(days: 7)),
+        isGroup: false,
+        imageUrl: null,
       ),
     ];
   }

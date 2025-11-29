@@ -233,7 +233,7 @@ class _TripCard extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 12.h, left: 16.w, right: 16.w),
       child: InkWell(
         onTap: () {
-          // TODO: Navigate to trip details
+          context.push('/trips/${trip.id}');
         },
         borderRadius: BorderRadius.circular(12),
         child: Row(

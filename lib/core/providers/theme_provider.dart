@@ -34,8 +34,12 @@ class ThemeModeNotifier extends StateNotifier<ThemeMode> {
   void toggleTheme() {
     if (state == ThemeMode.light) {
       setThemeMode(ThemeMode.dark);
-    } else {
+    } else if (state == ThemeMode.dark) {
       setThemeMode(ThemeMode.light);
+    } else {
+      // If system mode, check current system brightness and toggle to opposite
+      // For simplicity, default to dark when toggling from system
+      setThemeMode(ThemeMode.dark);
     }
   }
 }

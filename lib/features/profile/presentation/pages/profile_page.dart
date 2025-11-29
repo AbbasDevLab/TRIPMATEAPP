@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/services/auth_service.dart';
+import '../../../../core/providers/theme_provider.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});
@@ -278,12 +279,23 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                   ),
                   SizedBox(height: 12.h),
                   // Settings items (matching Figma)
-                  _SettingsItem(
-                    icon: Icons.dark_mode,
-                    iconColor: Colors.blue,
-                    title: 'Dark Mode',
-                    subtitle: 'Switch theme',
-                    trailing: Switch(value: false, onChanged: (val) {}),
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final themeMode = ref.watch(themeModeProvider);
+                      final isDarkMode = themeMode == ThemeMode.dark;
+                      return _SettingsItem(
+                        icon: Icons.dark_mode,
+                        iconColor: Colors.blue,
+                        title: 'Dark Mode',
+                        subtitle: 'Switch theme',
+                        trailing: Switch(
+                          value: isDarkMode,
+                          onChanged: (val) {
+                            ref.read(themeModeProvider.notifier).toggleTheme();
+                          },
+                        ),
+                      );
+                    },
                   ),
                   _SettingsItem(
                     icon: Icons.notifications,
