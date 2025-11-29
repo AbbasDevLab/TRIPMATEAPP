@@ -90,31 +90,40 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 SizedBox(height: 60.h),
-                // Logo
+                // Logo - Blue square with airplane icon (matching Figma)
                 Center(
                   child: Container(
                     width: 100.w,
                     height: 100.w,
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.primary,
-                      borderRadius: BorderRadius.circular(25),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(
-                      Icons.explore,
+                      Icons.flight,
                       size: 50,
                       color: Colors.white,
                     ),
                   ),
                 ),
                 SizedBox(height: 32.h),
+                // Welcome to TripMate (matching Figma)
                 Text(
-                  'Welcome Back',
+                  'Welcome to TripMate',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 8.h),
+                Text(
+                  'FCCU Community Travel App',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 4.h),
                 Text(
                   'Sign in to continue',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -196,14 +205,14 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       : const Text('Sign In'),
                 ),
                 SizedBox(height: 16.h),
-                // Divider
+                // Divider - "Or continue with" (matching Figma)
                 Row(
                   children: [
                     const Expanded(child: Divider()),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
                       child: Text(
-                        'OR',
+                        'Or continue with',
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ),
@@ -211,11 +220,39 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   ],
                 ),
                 SizedBox(height: 16.h),
-                // Google sign in
+                // Google sign in - styled to match Figma (light gray background, border, Google logo)
                 OutlinedButton.icon(
                   onPressed: _isLoading ? null : _handleGoogleSignIn,
-                  icon: const Icon(Icons.g_mobiledata),
-                  label: const Text('Sign in with Google'),
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: Colors.grey.shade50,
+                    side: BorderSide(color: Colors.grey.shade300),
+                    padding: EdgeInsets.symmetric(vertical: 14.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  icon: Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'G',
+                        style: TextStyle(
+                          color: Colors.blue.shade700,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                  label: const Text(
+                    'Sign in with Google',
+                    style: TextStyle(color: Colors.black87),
+                  ),
                 ),
                 SizedBox(height: 24.h),
                 // Register link

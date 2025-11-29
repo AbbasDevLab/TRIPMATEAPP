@@ -29,76 +29,112 @@ class _TourDiscoveryPageState extends ConsumerState<TourDiscoveryPage> {
     final searchQuery = _searchController.text.toLowerCase();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Discover Tours'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: () {
-              // TODO: Show filter dialog
-            },
-          ),
-        ],
-      ),
       body: Column(
         children: [
-          // Search bar
-          Padding(
-            padding: EdgeInsets.all(16.w),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search tours...',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: _searchController.text.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          _searchController.clear();
+          // Blue gradient header with search (matching Figma)
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Theme.of(context).colorScheme.primary,
+                  Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                ],
+              ),
+            ),
+            padding: EdgeInsets.only(
+              top: MediaQuery.of(context).padding.top + 16.h,
+              left: 16.w,
+              right: 16.w,
+              bottom: 16.h,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Group Tours',
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                SizedBox(height: 12.h),
+                // Search bar with filter icon (matching Figma)
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _searchController,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          hintText: 'Search destinations...',
+                          hintStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
+                          prefixIcon: const Icon(Icons.search, color: Colors.white),
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                        onChanged: (value) {
                           setState(() {});
                         },
-                      )
-                    : null,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              onChanged: (value) {
-                setState(() {});
-              },
-            ),
-          ),
-          // Filter chips
-          SizedBox(
-            height: 50.h,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              children: [
-                _FilterChip(
-                  label: 'All',
-                  isSelected: _selectedFilter == 'all',
-                  onTap: () => setState(() => _selectedFilter = 'all'),
-                ),
-                SizedBox(width: 8.w),
-                _FilterChip(
-                  label: 'Available',
-                  isSelected: _selectedFilter == 'available',
-                  onTap: () => setState(() => _selectedFilter = 'available'),
-                ),
-                SizedBox(width: 8.w),
-                _FilterChip(
-                  label: 'Upcoming',
-                  isSelected: _selectedFilter == 'upcoming',
-                  onTap: () => setState(() => _selectedFilter = 'upcoming'),
-                ),
-                SizedBox(width: 8.w),
-                _FilterChip(
-                  label: 'Popular',
-                  isSelected: _selectedFilter == 'popular',
-                  onTap: () => setState(() => _selectedFilter = 'popular'),
+                      ),
+                    ),
+                    SizedBox(width: 8.w),
+                    IconButton(
+                      icon: const Icon(Icons.filter_list, color: Colors.white),
+                      onPressed: () {
+                        // TODO: Show filter dialog
+                      },
+                    ),
+                  ],
                 ),
               ],
+            ),
+          ),
+          // Filter chips (matching Figma)
+          Container(
+            color: Colors.white,
+            padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+            child: SizedBox(
+              height: 40.h,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  _FilterChip(
+                    label: 'All',
+                    isSelected: _selectedFilter == 'all',
+                    onTap: () => setState(() => _selectedFilter = 'all'),
+                  ),
+                  SizedBox(width: 8.w),
+                  _FilterChip(
+                    label: 'Beach',
+                    isSelected: _selectedFilter == 'beach',
+                    onTap: () => setState(() => _selectedFilter = 'beach'),
+                  ),
+                  SizedBox(width: 8.w),
+                  _FilterChip(
+                    label: 'Mountain',
+                    isSelected: _selectedFilter == 'mountain',
+                    onTap: () => setState(() => _selectedFilter = 'mountain'),
+                  ),
+                  SizedBox(width: 8.w),
+                  _FilterChip(
+                    label: 'City',
+                    isSelected: _selectedFilter == 'city',
+                    onTap: () => setState(() => _selectedFilter = 'city'),
+                  ),
+                  SizedBox(width: 8.w),
+                  _FilterChip(
+                    label: 'Adventure',
+                    isSelected: _selectedFilter == 'adventure',
+                    onTap: () => setState(() => _selectedFilter = 'adventure'),
+                  ),
+                ],
+              ),
             ),
           ),
           // Tours list
@@ -129,13 +165,29 @@ class _TourDiscoveryPageState extends ConsumerState<TourDiscoveryPage> {
                         message: 'Try adjusting your search or filters',
                         icon: Icons.explore_outlined,
                       )
-                    : ListView.builder(
-                        padding: EdgeInsets.all(16.w),
-                        itemCount: filteredTours.length,
-                        itemBuilder: (context, index) {
-                          final tour = filteredTours[index];
-                          return _TourCard(tour: tour);
-                        },
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(16.w),
+                            child: Text(
+                              '${filteredTours.length} tours available',
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: Colors.grey.shade600,
+                                  ),
+                            ),
+                          ),
+                          Expanded(
+                            child: ListView.builder(
+                              padding: EdgeInsets.symmetric(horizontal: 16.w),
+                              itemCount: filteredTours.length,
+                              itemBuilder: (context, index) {
+                                final tour = filteredTours[index];
+                                return _TourCard(tour: tour);
+                              },
+                            ),
+                          ),
+                        ],
                       );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
@@ -175,10 +227,30 @@ class _FilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FilterChip(
-      label: Text(label),
-      selected: isSelected,
-      onSelected: (_) => onTap(),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? Theme.of(context).colorScheme.primary
+              : Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected
+                ? Theme.of(context).colorScheme.primary
+                : Colors.grey.shade300,
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? Colors.white : Colors.black87,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+      ),
     );
   }
 }
@@ -193,6 +265,9 @@ class _TourCard extends StatelessWidget {
     return Card(
       margin: EdgeInsets.only(bottom: 16.h),
       clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: InkWell(
         onTap: () {
           // TODO: Navigate to tour details
@@ -200,29 +275,73 @@ class _TourCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image
-            if (tour.images.isNotEmpty)
-              AspectRatio(
-                aspectRatio: 16 / 9,
-                child: Image.network(
-                  tour.images.first,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
+            // Image with tags (matching Figma)
+            Stack(
+              children: [
+                if (tour.images.isNotEmpty)
+                  AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: Image.network(
+                      tour.images.first,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: Colors.grey[300],
+                          child: const Icon(Icons.image, size: 64),
+                        );
+                      },
+                    ),
+                  )
+                else
+                  AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: Container(
                       color: Colors.grey[300],
                       child: const Icon(Icons.image, size: 64),
-                    );
-                  },
+                    ),
+                  ),
+                // Featured tag (matching Figma)
+                Positioned(
+                  top: 12.h,
+                  left: 12.w,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      'Featured',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
-              )
-            else
-              AspectRatio(
-                aspectRatio: 16 / 9,
-                child: Container(
-                  color: Colors.grey[300],
-                  child: const Icon(Icons.image, size: 64),
+                // Save tag (matching Figma)
+                Positioned(
+                  top: 12.h,
+                  right: 12.w,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      'Save \$300',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+              ],
+            ),
             Padding(
               padding: EdgeInsets.all(16.w),
               child: Column(
@@ -246,65 +365,74 @@ class _TourCard extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 8.h),
+                  // Date and Available spots (matching Figma)
                   Row(
                     children: [
                       Icon(Icons.calendar_today, size: 16.w, color: Colors.grey),
                       SizedBox(width: 4.w),
                       Text(
+                        'Date',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Colors.grey.shade600,
+                            ),
+                      ),
+                      SizedBox(width: 4.w),
+                      Text(
                         '${_formatDate(tour.startDate)} - ${_formatDate(tour.endDate)}',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      SizedBox(width: 16.w),
+                      Icon(Icons.people, size: 16.w, color: Colors.grey),
+                      SizedBox(width: 4.w),
+                      Text(
+                        'Available',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Colors.grey.shade600,
+                            ),
+                      ),
+                      SizedBox(width: 4.w),
+                      Text(
+                        '8 spots',
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],
                   ),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: 12.h),
+                  // Pricing (matching Figma)
                   Row(
                     children: [
-                      if (tour.rating != null) ...[
-                        Icon(Icons.star, size: 16.w, color: Colors.amber),
-                        SizedBox(width: 4.w),
-                        Text(
-                          tour.rating!.toStringAsFixed(1),
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                        SizedBox(width: 8.w),
-                        Text(
-                          '(${tour.reviewCount} reviews)',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Colors.grey,
-                              ),
-                        ),
-                        const Spacer(),
-                      ],
                       Text(
-                        'PKR ${tour.price.toStringAsFixed(0)}',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        '\$${tour.price.toStringAsFixed(0)}',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: Theme.of(context).colorScheme.primary,
                             ),
                       ),
-                    ],
-                  ),
-                  SizedBox(height: 12.h),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () {
-                            // TODO: Navigate to tour details
-                          },
-                          child: const Text('View Details'),
-                        ),
-                      ),
                       SizedBox(width: 8.w),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: tour.isAvailable
-                              ? () {
-                                  // TODO: Book tour
-                                }
-                              : null,
-                          child: const Text('Book Now'),
+                      Text(
+                        '\$${(tour.price * 1.3).toStringAsFixed(0)}',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              decoration: TextDecoration.lineThrough,
+                              color: Colors.grey.shade600,
+                            ),
+                      ),
+                      SizedBox(width: 4.w),
+                      Text(
+                        '/ person',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Colors.grey.shade600,
+                            ),
+                      ),
+                      const Spacer(),
+                      ElevatedButton(
+                        onPressed: () {
+                          // TODO: Navigate to tour details
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).colorScheme.primary,
+                          foregroundColor: Colors.white,
                         ),
+                        child: const Text('View Details'),
                       ),
                     ],
                   ),

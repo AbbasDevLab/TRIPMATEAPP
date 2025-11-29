@@ -20,56 +20,106 @@ class _CommunityFeedPageState extends ConsumerState<CommunityFeedPage> {
     final postsAsync = ref.watch(communityPostsProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Community'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () => context.push('/community/create-post'),
-          ),
-        ],
-      ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          ref.invalidate(communityPostsProvider);
-        },
-        child: postsAsync.when(
-          data: (posts) => posts.isEmpty
-              ? EmptyStateWidget(
-                  title: 'No Posts Yet',
-                  message: 'Be the first to share your travel experience!',
-                  icon: Icons.people_outline,
-                  action: ElevatedButton.icon(
-                    onPressed: () => context.push('/community/create-post'),
-                    icon: const Icon(Icons.add),
-                    label: const Text('Create Post'),
-                  ),
-                )
-              : ListView.builder(
-                  padding: EdgeInsets.all(16.w),
-                  itemCount: posts.length,
-                  itemBuilder: (context, index) {
-                    final post = posts[index];
-                    return _PostCard(post: post);
-                  },
-                ),
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => Center(
+      body: Column(
+        children: [
+          // Blue gradient header with search (matching Figma)
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Theme.of(context).colorScheme.primary,
+                  Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                ],
+              ),
+            ),
+            padding: EdgeInsets.only(
+              top: MediaQuery.of(context).padding.top + 16.h,
+              left: 16.w,
+              right: 16.w,
+              bottom: 16.h,
+            ),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.error_outline, size: 64, color: Colors.red),
-                const SizedBox(height: 16),
-                Text('Error loading posts: $error'),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () => ref.invalidate(communityPostsProvider),
-                  child: const Text('Retry'),
+                Text(
+                  'Community',
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                SizedBox(height: 12.h),
+                // Search bar (matching Figma)
+                TextField(
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    hintText: 'Search posts...',
+                    hintStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
+                    prefixIcon: const Icon(Icons.search, color: Colors.white),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
                 ),
               ],
             ),
           ),
-        ),
+          // Posts list
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: () async {
+                ref.invalidate(communityPostsProvider);
+              },
+              child: postsAsync.when(
+                data: (posts) => posts.isEmpty
+                    ? EmptyStateWidget(
+                        title: 'No Posts Yet',
+                        message: 'Be the first to share your travel experience!',
+                        icon: Icons.people_outline,
+                        action: ElevatedButton.icon(
+                          onPressed: () => context.push('/community/create-post'),
+                          icon: const Icon(Icons.add),
+                          label: const Text('Create Post'),
+                        ),
+                      )
+                    : ListView.builder(
+                        padding: EdgeInsets.all(16.w),
+                        itemCount: posts.length,
+                        itemBuilder: (context, index) {
+                          final post = posts[index];
+                          return _PostCard(post: post);
+                        },
+                      ),
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, stack) => Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                      const SizedBox(height: 16),
+                      Text('Error loading posts: $error'),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () => ref.invalidate(communityPostsProvider),
+                        child: const Text('Retry'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+      // FAB for creating posts (matching Figma)
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => context.push('/community/create-post'),
+        child: const Icon(Icons.add),
       ),
     );
   }

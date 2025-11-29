@@ -25,7 +25,7 @@ class _AIAssistantPageState extends ConsumerState<AIAssistantPage> {
     super.initState();
     _messages.add({
       'role': 'assistant',
-      'content': 'Hello! I\'m your AI travel assistant. How can I help you plan your trip today?',
+      'content': 'Hi! I\'m your AI Travel Assistant. I can help you plan the perfect trip. Where would you like to go, and what\'s your budget?',
     });
   }
 
@@ -115,36 +115,104 @@ class _AIAssistantPageState extends ConsumerState<AIAssistantPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Icon(Icons.auto_awesome, color: Colors.amber),
-            SizedBox(width: 8.w),
-            const Text('AI Assistant'),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.image_search),
-            onPressed: () {
-              // TODO: Implement image search
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Image search coming soon!')),
-              );
-            },
-          ),
-        ],
-      ),
       body: Column(
         children: [
+          // Blue gradient header (matching Figma)
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Theme.of(context).colorScheme.primary,
+                  Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                ],
+              ),
+            ),
+            padding: EdgeInsets.only(
+              top: MediaQuery.of(context).padding.top + 16.h,
+              left: 16.w,
+              right: 16.w,
+              bottom: 16.h,
+            ),
+            child: Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'AI Trip Planner',
+                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                      Text(
+                        'Powered by AI',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Colors.white.withOpacity(0.9),
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  Icons.auto_awesome,
+                  color: Colors.white,
+                  size: 24.w,
+                ),
+              ],
+            ),
+          ),
           // Messages
           Expanded(
             child: ListView.builder(
               controller: _scrollController,
               padding: EdgeInsets.all(16.w),
-              itemCount: _messages.length + (_isLoading ? 1 : 0),
+              itemCount: _messages.length + (_isLoading ? 1 : 0) + (_messages.length == 1 ? 1 : 0),
               itemBuilder: (context, index) {
-                if (index == _messages.length) {
+                // Show suggested prompts after initial message
+                if (index == _messages.length && _messages.length == 1) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 16.h),
+                      Text(
+                        'Try asking:',
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                      SizedBox(height: 12.h),
+                      Wrap(
+                        spacing: 8.w,
+                        runSpacing: 8.h,
+                        children: [
+                          _SuggestedPromptButton(
+                            text: 'Plan a budget trip to northern areas',
+                            onTap: () {
+                              _messageController.text = 'Plan a budget trip to northern areas';
+                              _sendMessage();
+                            },
+                          ),
+                          _SuggestedPromptButton(
+                            text: 'Beach vacation',
+                            onTap: () {
+                              _messageController.text = 'Beach vacation';
+                              _sendMessage();
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+                }
+                if (index == _messages.length + (_messages.length == 1 ? 1 : 0)) {
                   return const Center(
                     child: Padding(
                       padding: EdgeInsets.all(16.0),
@@ -183,29 +251,35 @@ class _AIAssistantPageState extends ConsumerState<AIAssistantPage> {
                   ),
                   onPressed: _isListening ? _stopListening : _startListening,
                 ),
-                // Text input
+                // Text input (matching Figma)
                 Expanded(
                   child: TextField(
                     controller: _messageController,
                     decoration: InputDecoration(
-                      hintText: 'Ask me anything about travel...',
+                      hintText: 'Describe your ideal trip...',
+                      filled: true,
+                      fillColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(24),
+                        borderSide: BorderSide.none,
                       ),
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 16.w,
-                        vertical: 8.h,
-                      ),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                     ),
                     maxLines: null,
                     textCapitalization: TextCapitalization.sentences,
                     onSubmitted: (_) => _sendMessage(),
                   ),
                 ),
-                // Send button
-                IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: _isLoading ? null : _sendMessage,
+                // Send button (matching Figma - circular blue button with paper airplane)
+                Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
+                    shape: BoxShape.circle,
+                  ),
+                  child: IconButton(
+                    icon: const Icon(Icons.send, color: Colors.white),
+                    onPressed: _isLoading ? null : _sendMessage,
+                  ),
                 ),
               ],
             ),
@@ -238,13 +312,71 @@ class _MessageBubble extends StatelessWidget {
         decoration: BoxDecoration(
           color: isUser
               ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).colorScheme.surfaceVariant,
+              : Theme.of(context).colorScheme.primary.withOpacity(0.1),
           borderRadius: BorderRadius.circular(16),
         ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (!isUser) ...[
+              Container(
+                padding: EdgeInsets.all(6.w),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.auto_awesome,
+                  size: 16.w,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(width: 8.w),
+            ],
+            Flexible(
+              child: Text(
+                message,
+                style: TextStyle(
+                  color: isUser ? Colors.white : Colors.black87,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SuggestedPromptButton extends StatelessWidget {
+  final String text;
+  final VoidCallback onTap;
+
+  const _SuggestedPromptButton({
+    required this.text,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+          ),
+        ),
         child: Text(
-          message,
+          text,
           style: TextStyle(
-            color: isUser ? Colors.white : null,
+            color: Theme.of(context).colorScheme.primary,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ),
